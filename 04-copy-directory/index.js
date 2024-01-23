@@ -4,14 +4,17 @@ const path = require('path');
 const pathFolder = path.join(__dirname, 'files');
 const pathCopyFolder = path.join(__dirname, 'files-copy');
 
-fs.mkdir(pathCopyFolder, { recursive: true }, (err) => {
-  if (err) {
-    console.log(err, 'Error');
-  }
-  fs.readdir(pathFolder, 'utf-8', (err, files) => {
-    if (err) {
-      console.log('Error');
-    }
+fs.mkdir(pathCopyFolder, { recursive: true }, () => {
+  fs.readdir(pathFolder, 'utf-8', (_, files) => {
+    fs.readdir(pathCopyFolder, 'utf-8', (_, copyFiles) => {
+      copyFiles.forEach((file) => {
+        if (!files.includes(file)) {
+          fs.unlink(path.join(pathCopyFolder, file), (err) => {
+            if (err) throw err;
+          });
+        }
+      });
+    });
 
     files.forEach((file) => {
       fs.copyFile(
@@ -24,6 +27,7 @@ fs.mkdir(pathCopyFolder, { recursive: true }, (err) => {
         },
       );
     });
+
     console.log('Сopied');
   });
 });
