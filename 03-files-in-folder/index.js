@@ -4,18 +4,18 @@ const path = require('path');
 const pathFolder = path.join(__dirname, 'secret-folder');
 
 fs.readdir(pathFolder, 'utf-8', (err, files) => {
-  console.log(files);
   if (err) {
     throw err;
   }
   files.forEach((file) => {
     fs.stat(path.join(pathFolder, `${file}`), (err, stats) => {
+      const fileName = path.basename(file, path.extname(file));
       if (err) throw err;
       if (stats.isFile()) {
         console.log(
-          `File: ${file.split('.')[0]} - file extension: ${path.extname(
-            file,
-          )} - file size: ${stats.size}`,
+          `File: ${fileName} - file extension: ${
+            path.extname(file).split('.')[1]
+          } - file size: ${stats.size}`,
         );
       }
     });
